@@ -1,9 +1,12 @@
 ## Interface: 120001
 ## Title: Decor Treasure Hunt
 ## Notes: Find Neighborhood Decor Treasure Hunt clues and waypoints for Alliance and Horde
-## Author: Player
-## Version: 1.0.0
+## Author: Hatdragon
+## Version: 1.0.2
 ## SavedVariables: DecorTreasureHuntDB
+## Category: Housing
 ## OptionalDeps: TomTom
 
+AllianceRiddles.lua
+HordeRiddles.lua
 DecorTreasureHunt.lua
