@@ -26,14 +26,14 @@ jobs:
 
       - name: Verify addon folder exists
         run: |
-          test -d "DecorTreasureHunt" || (echo "Expected ./WeatherBeatenJournal addon folder not found" && exit 1)
-          test -f "WeatherBeatenJournal/WeatherBeatenJournal.toc" || (echo "Expected WeatherBeatenJournal/WeatherBeatenJournal.toc not found" && exit 1)
+          test -d "DecorTreasureHunt" || (echo "Expected ./DecorTreasureHunt addon folder not found" && exit 1)
+          test -f "DecorTreasureHunt/DecorTreasureHunt.toc" || (echo "Expected DecorTreasureHunt/DecorTreasureHunt.toc not found" && exit 1)
 
       - name: Build zip (Retail)
         run: |
           mkdir -p dist
-          # Zip the folder itself so the archive contains WeatherBeatenJournal/...
-          zip -r "dist/WeatherBeatenJournal-${{ steps.ver.outputs.tag }}.zip" "WeatherBeatenJournal" \
+          # Zip the folder itself so the archive contains DecorTreasureHunt/...
+          zip -r "dist/DecorTreasureHunt-${{ steps.ver.outputs.tag }}.zip" "DecorTreasureHunt" \
             -x "*.psd" "*.xcf" "*.blend" \
             -x "*.kra" "*.aseprite" \
             -x "*.zip" "*.7z" "*.rar" \
@@ -41,15 +41,15 @@ jobs:
 
       - name: Verify zip structure
         run: |
-          unzip -l "dist/WeatherBeatenJournal-${{ steps.ver.outputs.tag }}.zip" | head -n 30
-          unzip -l "dist/WeatherBeatenJournal-${{ steps.ver.outputs.tag }}.zip" | grep -q "^ *.* WeatherBeatenJournal/WeatherBeatenJournal.toc$" \
-            || (echo "Zip missing WeatherBeatenJournal/WeatherBeatenJournal.toc" && exit 1)
+          unzip -l "dist/DecorTreasureHunt-${{ steps.ver.outputs.tag }}.zip" | head -n 30
+          unzip -l "dist/DecorTreasureHunt-${{ steps.ver.outputs.tag }}.zip" | grep -q "^ *.* DecorTreasureHunt/DecorTreasureHunt.toc$" \
+            || (echo "Zip missing DecorTreasureHunt/DecorTreasureHunt.toc" && exit 1)
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: WeatherBeatenJournal ${{ steps.ver.outputs.tag }}
+          name: DecorTreasureHunt ${{ steps.ver.outputs.tag }}
           tag_name: ${{ steps.ver.outputs.tag }}
           files: |
-            dist/WeatherBeatenJournal-${{ steps.ver.outputs.tag }}.zip
+            dist/DecorTreasureHunt-${{ steps.ver.outputs.tag }}.zip
           generate_release_notes: true
