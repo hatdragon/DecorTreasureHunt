@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify addon folder exists
+        run: |
+          test -d "DecorTreasureHunt" || (echo "Expected ./DecorTreasureHunt addon folder not found" && exit 1)
+          test -f "DecorTreasureHunt/DecorTreasureHunt.toc" || (echo "Expected DecorTreasureHunt/DecorTreasureHunt.toc not found" && exit 1)
+      
+      - name: Build test zip (no publish)
+        run: |
+          mkdir -p dist
+          zip -r "dist/DecorTreasureHunt-test.zip" "DecorTreasureHunt" \
+            -x "*.psd" "*.xcf" "*.blend" \
+            -x "*.kra" "*.aseprite" \
+            -x "*.zip" "*.7z" "*.rar" \
+            -x "**/.DS_Store" "**/Thumbs.db"
+
+      - name: Verify zip structure
+        run: |
+          unzip -l dist/DecorTreasureHunt-test.zip | grep -q "^ *.* DecorTreasureHunt/DecorTreasureHunt.toc$" \
+            || (echo "Zip missing DecorTreasureHunt/DecorTreasureHunt.toc" && exit 1)

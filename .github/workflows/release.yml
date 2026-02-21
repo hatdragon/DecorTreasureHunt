@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "r*"
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Determine version from tag
+        id: ver
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#r}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify addon folder exists
+        run: |
+          test -d "DecorTreasureHunt" || (echo "Expected ./WeatherBeatenJournal addon folder not found" && exit 1)
+          test -f "WeatherBeatenJournal/WeatherBeatenJournal.toc" || (echo "Expected WeatherBeatenJournal/WeatherBeatenJournal.toc not found" && exit 1)
+
+      - name: Build zip (Retail)
+        run: |
+          mkdir -p dist
+          # Zip the folder itself so the archive contains WeatherBeatenJournal/...
+          zip -r "dist/WeatherBeatenJournal-${{ steps.ver.outputs.tag }}.zip" "WeatherBeatenJournal" \
+            -x "*.psd" "*.xcf" "*.blend" \
+            -x "*.kra" "*.aseprite" \
+            -x "*.zip" "*.7z" "*.rar" \
+            -x "**/.DS_Store" "**/Thumbs.db"
+
+      - name: Verify zip structure
+        run: |
+          unzip -l "dist/WeatherBeatenJournal-${{ steps.ver.outputs.tag }}.zip" | head -n 30
+          unzip -l "dist/WeatherBeatenJournal-${{ steps.ver.outputs.tag }}.zip" | grep -q "^ *.* WeatherBeatenJournal/WeatherBeatenJournal.toc$" \
+            || (echo "Zip missing WeatherBeatenJournal/WeatherBeatenJournal.toc" && exit 1)
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: WeatherBeatenJournal ${{ steps.ver.outputs.tag }}
+          tag_name: ${{ steps.ver.outputs.tag }}
+          files: |
+            dist/WeatherBeatenJournal-${{ steps.ver.outputs.tag }}.zip
+          generate_release_notes: true
