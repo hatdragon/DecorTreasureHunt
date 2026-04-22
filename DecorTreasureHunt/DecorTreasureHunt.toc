@@ -1,8 +1,8 @@
-## Interface: 120001
+## Interface: 120005
 ## Title: Decor Treasure Hunt
 ## Notes: Find Neighborhood Decor Treasure Hunt clues and waypoints for Alliance and Horde
 ## Author: hatdragon
-## Version: r1.0.2
+## Version: r1.0.3
 ## SavedVariables: DecorTreasureHuntDB
 ## IconTexture: Interface\Icons\INV_Misc_Map_01
 ## Category: Housing
